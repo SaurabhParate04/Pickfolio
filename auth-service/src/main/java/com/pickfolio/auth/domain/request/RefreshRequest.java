@@ -11,6 +11,6 @@ import lombok.*;
 public class RefreshRequest {
     @NotBlank(message = "Refresh token cannot be blank")
     private String refreshToken;
-    @NotBlank(message = "Username cannot be blank")
-    private String username;
+    @NotBlank(message = "Device info cannot be blank")
+    private String deviceInfo;
 }

@@ -1,6 +1,7 @@
 package com.pickfolio.auth.controller;
 
 import com.pickfolio.auth.domain.request.LoginRequest;
+import com.pickfolio.auth.domain.request.LogoutRequest;
 import com.pickfolio.auth.domain.request.RefreshRequest;
 import com.pickfolio.auth.domain.request.RegisterRequest;
 import com.pickfolio.auth.domain.response.LoginResponse;
@@ -41,6 +42,18 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refreshTokens(@Valid @RequestBody RefreshRequest request) {
         LoginResponse newAccessToken = userService.refreshAccessToken(request);
         return ResponseEntity.status(HttpStatus.OK).body(newAccessToken);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequest request) {
+        userService.logoutUser(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<Void> logoutAll(@RequestBody LogoutRequest request) {
+        userService.logoutUserFromAllDevices(request);
+        return ResponseEntity.ok().build();
     }
 
 }

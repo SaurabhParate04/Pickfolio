@@ -14,4 +14,6 @@ public class LoginRequest {
     private String username;
     @NotBlank(message = "Password cannot be blank")
     private String password;
+    @NotBlank(message = "Device info cannot be blank")
+    private String deviceInfo;
 }
