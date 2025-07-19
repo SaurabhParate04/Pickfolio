@@ -1,7 +1,9 @@
 package com.pickfolio.auth.controller;
 
 import com.pickfolio.auth.domain.request.LoginRequest;
+import com.pickfolio.auth.domain.request.RefreshRequest;
 import com.pickfolio.auth.domain.request.RegisterRequest;
+import com.pickfolio.auth.domain.response.LoginResponse;
 import com.pickfolio.auth.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody LoginRequest request) {
-        String token = userService.loginUser(request);
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest request) {
+        LoginResponse loginResponse = userService.loginUser(request);
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshTokens(@Valid @RequestBody RefreshRequest request) {
+        LoginResponse newAccessToken = userService.refreshAccessToken(request);
+        return ResponseEntity.status(HttpStatus.OK).body(newAccessToken);
     }
 
 }

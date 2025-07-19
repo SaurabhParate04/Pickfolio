@@ -1,4 +1,4 @@
-package com.pickfolio.auth.config;
+package com.pickfolio.auth.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

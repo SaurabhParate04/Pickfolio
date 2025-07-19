@@ -13,3 +13,9 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  accessTokenSecret: ${JWT_SECRET:defaultSecret}
+  accessTokenExpiryTime: 600000 # in milliseconds (10 minutes)
+  refreshTokenSecret: ${JWT_REFRESH_SECRET:defaultRefreshSecret}
+  refreshTokenExpiryTime: 604800000  # in milliseconds (7days)
