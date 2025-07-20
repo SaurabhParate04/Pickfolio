@@ -63,8 +63,8 @@ public class JwtServiceImpl implements JwtService {
                     .verify(token);
             return jwt.getSubject();
         } catch (JWTVerificationException e) {
-            logger.error("Failed to extract username from token: {}", e.getMessage());
-            return null;
+            logger.error("Failed to extract username from token");
+            throw e;
         }
     }
 
@@ -77,7 +77,7 @@ public class JwtServiceImpl implements JwtService {
                 .withSubject(username)
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
-                .sign(accessTokenAlgorithm);
+                .sign(refreshTokenAlgorithm);
     }
 
     @Override

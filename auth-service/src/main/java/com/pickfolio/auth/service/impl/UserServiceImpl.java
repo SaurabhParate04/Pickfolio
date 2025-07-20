@@ -164,7 +164,8 @@ public class UserServiceImpl implements UserService {
                         },
                         () -> {
                             logger.warn("Logout attempted with non-existing token: {}", request.getRefreshToken());
-                            // Still return OK (don't expose presence/absence of token)
+                            // Always return success to avoid revealing whether the token exists or not.
+                            // Client won’t be affected because they’ll delete the token on their side anyway.
                         }
                 );
     }

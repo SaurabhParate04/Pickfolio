@@ -1,4 +1,4 @@
-package com.pickfolio.auth.exception;
+package com.pickfolio.auth.domain.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

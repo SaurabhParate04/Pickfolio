@@ -1,10 +1,13 @@
 package com.pickfolio.auth.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.pickfolio.auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint jwtAuthEntryPoint;
+    private final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, AuthenticationEntryPoint jwtAuthEntryPoint) {
         this.jwtService = jwtService;
@@ -45,9 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7); // Remove "Bearer " prefix
-        final String usernameFromToken = jwtService.extractUsernameFromAccessToken(token);
 
         try {
+            final String usernameFromToken = jwtService.extractUsernameFromAccessToken(token);
             if (usernameFromToken == null) {
                 throw new AuthenticationCredentialsNotFoundException("Username not found in token");
             }
@@ -68,8 +72,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
+        } catch (JWTVerificationException e) {
+            logger.error("Token validation failed: {}", e.getMessage());
+            jwtAuthEntryPoint.commence(request, response, new BadCredentialsException("Invalid access token: " + e.getMessage()));
+            return;
         } catch (UsernameNotFoundException e) {
-            logger.error("Access token might be tampered with: User not found: " + usernameFromToken);
+            logger.error("Access token might be tampered with: User not found");
             jwtAuthEntryPoint.commence(request, response, new AuthenticationCredentialsNotFoundException("Access token malformed: user not found", e));
             return;
         } catch (BadCredentialsException | AuthenticationCredentialsNotFoundException e) {
